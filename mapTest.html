@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A Basic Map</title>
+  <style>
+    #map {
+      height: 100%;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script>
+  function initMap() {
+    var mapOptions = {
+      zoom: 8,
+      center: new google.maps.LatLng(37.5, -122),
+      mapTypeId: 'roadmap'
+    };
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  }
+  </script>
+</head>
+<body>
+<div id="map"></div>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsVQRy8bob-zqcyUF8yRmXSeQBARxl4Jw&callback=initMap">
+</script>
+<script>
+function initMap() {
+  var mapOptions = {
+    zoom: 8,
+    center: new google.maps.LatLng(37.5, -122),
+    mapTypeId: 'roadmap'
+  };
+  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+  var goldenGate = {lat: 37.8199,lng: -122.4783};
+
+}
+</script>
+<script>
+function initMap() {
+  var mapOptions = {
+    zoom: 8,
+    center: new google.maps.LatLng(37.5, -122),
+    mapTypeId: 'roadmap'
+  };
+  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+  var goldenGatePosition = {lat: 37.8199,lng: -122.4783};
+  var marker = new google.maps.Marker();
+
+}
+</script>
+<script>
+function initMap() {
+  var mapOptions = {
+    zoom: 8,
+    center: new google.maps.LatLng(37.5, -122),
+    mapTypeId: 'roadmap'
+  };
+  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+  var goldenGatePosition = {lat: 37.8199,lng: -122.4783};
+  var marker = new google.maps.Marker({
+      position: goldenGatePosition,
+      map: map,
+      title: 'Golden Gate Bridge'
+      });
+
+}
+</script>
+  
+</body>
+</html>
