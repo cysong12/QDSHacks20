@@ -67,7 +67,7 @@ const getSkills = data => {
 const App = () => {
   const [state, setState] = useState({
     state: '',
-    dateFrom: new Date('2018-09-01'),
+    dateFrom: new Date('2019-03-01'),
     dateTo: new Date('2019-09-30'),
     data: null,
     lineData: [],
@@ -77,17 +77,22 @@ const App = () => {
   const matches = useMediaQuery('(min-width: 960px)');
 
   const getLineData = data => {
+    let topSkills = [];
+    for (let i = 6; i >= 0; i--)
+      if (data[i])
+        topSkills.push(data[i]);
     let lineData = [];
     let dates = generateDates(state.dateFrom, state.dateTo);
-    data.forEach(d => {
+    topSkills.forEach(d => {
       let obj = {
         id: d.skill,
         color: "hsl(139, 70%, 50%)",
         data: []
       };
       dates.forEach(date => {
-        let label = moment(date).format('YYYY-MM');
-        let count = d.dates.filter(dt => label === moment(dt).format('YYYY-MM')).length;
+        let label = moment(date).format("YYYY-MM");
+        let count = d.dates.filter(dt => label === moment(dt).format("YYYY-MM"))
+          .length;
         obj.data.push({
           x: label,
           y: count
