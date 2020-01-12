@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 const app = express();
+
 let db;
 
 app.use(cors());
@@ -17,7 +18,7 @@ MongoClient.connect(
   "mongodb://admin:admin123@ds052408.mlab.com:52408/job-analyser",
   (err, client) => {
     if (err) throw err;
-    db = client.db("job-analyser");
+    db = client.db("job-analyser").collection('jobs');
   }
 );
 
@@ -27,29 +28,32 @@ app.get('/', (req, res, err) => {
 });
 
 app.get('/jobs', (req, res, err) => {
-  db.collection('jobs').find().toArray((err, docs) => {
+  db.find().toArray((err, docs) => {
     if (err) throw err;
+    for (let doc in docs) {
+      console.log(doc);
+    }
     res.send(docs);
   });
 });
 
 app.get('/jobs/state/:state', (req, res, err) => {
-  db.collection('jobs').find({ state: { $eq: req.params.state } }).toArray((err, docs) => {
+  db.find({ state: { $eq: req.params.state } }).toArray((err, docs) => {
     if (err) throw err;
     res.send(docs);
   });
 });
 
 app.get('/states', (req, res, err) => {
-  db.collection('jobs').distinct('state', (err, docs) => {
+  db.distinct('state', (err, docs) => {
     console.log(docs);
     if (err) throw err;
     res.send(docs);
   });
 });
 
-app.get("/cities", (req, res, err) => {
-  db.collection("jobs").distinct("city", (err, docs) => {
+app.get('/cities', (req, res, err) => {
+  db.distinct('city', (err, docs) => {
     console.log(docs);
     if (err) throw err;
     res.send(docs);

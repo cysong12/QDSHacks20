@@ -2,10 +2,18 @@ ul {
  list-style-type: none;
 }
 
+.appBar {
+  margin-bottom: 25px;
+}
+
 .form {
   margin-bottom: 35px;
 }
 
 .card {
   margin-bottom: 25px;
+}
+
+.loader {
+  margin-top: 55px;
 }
