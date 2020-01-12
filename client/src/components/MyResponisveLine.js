@@ -1,10 +1,9 @@
 import React from 'react';
 import { ResponsiveLine } from '@nivo/line';
-import { data } from '../constants';
 
-const MyResponsiveLine = () => (
+const MyResponsiveLine = props => (
   <ResponsiveLine
-    data={data}
+    data={props.data}
     margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
     xScale={{ type: 'point' }}
     yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
@@ -15,7 +14,7 @@ const MyResponsiveLine = () => (
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
-      legend: 'transportation',
+      legend: 'posting dates',
       legendOffset: 36,
       legendPosition: 'middle'
     }}
@@ -24,7 +23,7 @@ const MyResponsiveLine = () => (
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
-      legend: 'count',
+      legend: 'number of postings',
       legendOffset: -40,
       legendPosition: 'middle'
     }}

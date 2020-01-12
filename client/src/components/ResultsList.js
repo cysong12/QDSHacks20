@@ -1,5 +1,4 @@
 import React from 'react';
-import { css } from '@emotion/core';
 import BarLoader from 'react-spinners/BarLoader';
 import { Card, CardContent, Typography, Box } from "@material-ui/core";
 import '../App.css';
@@ -16,9 +15,9 @@ const ResultsList = props => {
             <Card className="card" key={i}>
               <CardContent>
                 <Typography gutterBottom variant="h6">
-                  {d.jobTitle}
+                  {d.skill}
                 </Typography>
-                <Typography variant="body1">{d.companyName}</Typography>
+                <Typography variant="body1">{d.count} Posting{(d.count !== 1 ? 's' : '')}</Typography>
               </CardContent>
             </Card>
           ))}

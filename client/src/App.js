@@ -4,6 +4,7 @@ import SearchForm from './components/SearchForm';
 import ResultsList from './components/ResultsList';
 import MyResponsiveLine from './components/MyResponisveLine';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { data } from "./constants";
 import { createMuiTheme } from "@material-ui/core/styles";
 import "./App.css";
 
@@ -19,16 +20,86 @@ const theme = createMuiTheme({
   }
 });
 
+const compare = (a, b) => {
+  return b.count - a.count;
+};
+
+const containsSkill = (skills, skill) => {
+  for (let i = 0; i < skills.length; i++) {
+    if (skills[i].skill === skill)
+      return i;
+  }
+  return -1;
+};  
+
+const containsDate = (dates, date) => {
+  for (let i = 0; i < dates.length; i++) {
+    if (dates[i].x === date)
+      return i;
+  }
+  return -1;
+};
+
+const getSkills = data => {
+  let skills = [];
+  for (let d of data) {
+    for (let s of d.skills) {
+      let index = containsSkill(skills, s);
+      if (index === -1) {
+        skills.push({
+          skill: s,
+          count: 1,
+          dates: [d.date]
+        });
+      } else {
+        skills[index].count++;
+        skills[index].dates.push(d.date);
+      }
+    }
+  }
+  console.log()
+  return skills.sort(compare);
+};
+
+const getLineData = data => {
+  let lineData = [];
+  console.log(data);
+  data.forEach(d => {
+    let obj = {
+      id: d.skill,
+      color: "hsl(139, 70%, 50%)",
+      data: []
+    };
+    d.dates.forEach(date => {
+      let dateObj = new Date(date);
+      let label = dateObj.getFullYear() + "/" + dateObj.getMonth();
+      let index = containsDate(d.dates, label);
+      if (index === -1) {
+        obj.data.push({
+          x: label,
+          y: 1
+        });
+      } else {
+        obj.data[index].y++;
+      }
+    });
+    lineData.push(obj);
+  });
+  console.log(lineData);
+  return lineData;
+};
+
 const App = () => {
   const [state, setState] = useState({
     state: '',
     dateFrom: null,
     dateTo: null,
     data: null,
+    lineData: [],
     loading: false
   });
 
-  const matches = useMediaQuery('(min-width: 600px)');
+  const matches = useMediaQuery('(min-width: 960px)');
 
   useEffect(() => {
     console.log('hello world');
@@ -44,12 +115,15 @@ const App = () => {
 
   const handleStateChange = (event, value) => {
     console.log(value);
-    fetch('http://localhost:9000/jobs/state/' + value.abbreviation)
+    let res = fetch('http://localhost:9000/jobs/state/' + value.abbreviation)
       .then(res => res.json())
       .then(data => {
+        const skills = getSkills(data);
+        const lineData = getLineData(skills);
         setState({
           ...state,
-          data: data,
+          data: skills,
+          lineData: lineData,
           loading: false
         });
       });
@@ -84,8 +158,8 @@ const App = () => {
         </AppBar>
         <Container maxWidth="lg">
           <Grid container spacing={3} justify="flex-start">
-            <Box clone order={{ xs: 2, sm: 1 }}>
-              <Grid item xs={12} md={4}>
+            <Box clone order={{ xs: 2, md: 1 }}>
+              <Grid item xs={12} md={5}>
                 <SearchForm
                   state={state}
                   onStateChange={handleStateChange}
@@ -95,11 +169,11 @@ const App = () => {
                 <ResultsList data={state.data} loading={state.loading} />
               </Grid>
             </Box>
-            <Box clone order={{ xs: 1, sm: 2 }}>
-              <Grid item xs={12} md={8}>
+            <Box clone order={{ xs: 1, md: 2 }}>
+              <Grid item xs={12} md={7}>
                 <Paper>
-                  <div style={{ height: matches ? 700 : 400 }}>
-                    <MyResponsiveLine />
+                  <div style={{ height: matches ? 700 : 500 }}>
+                    <MyResponsiveLine data={state.lineData} />
                   </div>
                 </Paper>
               </Grid>

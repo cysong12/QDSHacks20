@@ -3,8 +3,40 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const { spawnSync } = require('child_process');
 const MongoClient = require('mongodb').MongoClient;
 const app = express();
+
+const skills = [
+  /\bc\b/,
+  /\bc\++\b/,
+  /\bc#\b/,
+  /\bf\b/,
+  /\bf#\b/,
+  /\bswift\b/,
+  /\bkotlin\b/,
+  /\bjava\b/,
+  /\bjavascript\b/,
+  /\bhtml\b/,
+  /\bcss\b/,
+  /\bnode\b/,
+  /\bnpm\b/,
+  /\breact\b/,
+  /\bangular\b/,
+  /\bruby\b/,
+  /\bpython\b/,
+  /\bdjango\b/,
+  /\bexpress\b/,
+  /\bdart\b/,
+  /\bgolang\b/,
+  /\bcobol\b/,
+  /\bada\b/,
+  /\bperl\b/,
+  /\blisp\b/,
+  /\br\b/,
+  /\bsql\b/,
+  /\brust\b/
+];
 
 let db;
 
@@ -38,8 +70,23 @@ app.get('/jobs', (req, res, err) => {
 });
 
 app.get('/jobs/state/:state', (req, res, err) => {
-  db.find({ state: { $eq: req.params.state } }).toArray((err, docs) => {
+  db.find({ state: { $eq: req.params.state } }).toArray(async (err, docs) => {
     if (err) throw err;
+    for (let doc of docs) {
+      if (doc.skills === null) {
+        let description = doc.description.toLowerCase().replace(',', ' ').replace('/', ' ');
+        let skillsArray = [];
+        skills.forEach(s => {
+          if (s.test(description))
+            skillsArray.push(s.source.replace(/\\b/g, '').replace('\\', ''));
+        });
+        // const result = spawnSync('python', ['./python/parse_skills.py', doc.description]);
+        // let output = result.output.toString();
+        // let skills = output.substr(1, output.length - 4).split('\r\n');
+        doc.skills = skillsArray;
+        await db.update({ state: { $eq: req.params.state } }, { $set: { skills: skillsArray } });
+      }
+    }
     res.send(docs);
   });
 });
