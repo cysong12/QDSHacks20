@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, AppBar, Container, Typography, Toolbar, Box } from '@material-ui/core';
 import SearchForm from './components/SearchForm';
 import ResultsList from './components/ResultsList';
@@ -46,7 +45,7 @@ const App = () => {
     <React.Fragment>
       <AppBar position="relative">
         <Toolbar>
-          <Typography variant="h6">Job Analyser</Typography>
+          <Typography variant="h6">Software Jobs Analyser</Typography>
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg">

@@ -27,18 +27,32 @@ app.get('/', (req, res, err) => {
 });
 
 app.get('/jobs', (req, res, err) => {
-  db.collection('jobs').find().toArray((err, result) => {
-    console.log(result);
+  db.collection('jobs').find().toArray((err, docs) => {
     if (err) throw err;
-    res.send(result);
+    res.send(docs);
   });
 });
 
 app.get('/jobs/state/:state', (req, res, err) => {
-  db.collection('jobs').find({ state: { $eq: req.params.state } }).toArray((err, result) => {
-    console.log(result);
+  db.collection('jobs').find({ state: { $eq: req.params.state } }).toArray((err, docs) => {
     if (err) throw err;
-    res.send(result);
+    res.send(docs);
+  });
+});
+
+app.get('/states', (req, res, err) => {
+  db.collection('jobs').distinct('state', (err, docs) => {
+    console.log(docs);
+    if (err) throw err;
+    res.send(docs);
+  });
+});
+
+app.get("/cities", (req, res, err) => {
+  db.collection("jobs").distinct("city", (err, docs) => {
+    console.log(docs);
+    if (err) throw err;
+    res.send(docs);
   });
 });
 
