@@ -4,8 +4,8 @@ import SearchForm from './components/SearchForm';
 import ResultsList from './components/ResultsList';
 import MyResponsiveLine from './components/MyResponisveLine';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { data } from "./constants";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme } from '@material-ui/core/styles';
+import moment from 'moment';
 import "./App.css";
 
 const theme = createMuiTheme({
@@ -32,12 +32,16 @@ const containsSkill = (skills, skill) => {
   return -1;
 };  
 
-const containsDate = (dates, date) => {
-  for (let i = 0; i < dates.length; i++) {
-    if (dates[i].x === date)
-      return i;
+const generateDates = (dateFrom, dateTo) => {
+  let dates = [];
+  let from = moment(dateFrom);
+  let to = moment(dateTo);
+  while (from <= to) {
+    dates.push(moment(from).format('YYYY-MM'));
+    from = moment(from).add(1, 'months');
   }
-  return -1;
+  console.log(dates);
+  return dates;
 };
 
 const getSkills = data => {
@@ -57,43 +61,14 @@ const getSkills = data => {
       }
     }
   }
-  console.log()
   return skills.sort(compare);
-};
-
-const getLineData = data => {
-  let lineData = [];
-  console.log(data);
-  data.forEach(d => {
-    let obj = {
-      id: d.skill,
-      color: "hsl(139, 70%, 50%)",
-      data: []
-    };
-    d.dates.forEach(date => {
-      let dateObj = new Date(date);
-      let label = dateObj.getFullYear() + "/" + dateObj.getMonth();
-      let index = containsDate(d.dates, label);
-      if (index === -1) {
-        obj.data.push({
-          x: label,
-          y: 1
-        });
-      } else {
-        obj.data[index].y++;
-      }
-    });
-    lineData.push(obj);
-  });
-  console.log(lineData);
-  return lineData;
 };
 
 const App = () => {
   const [state, setState] = useState({
     state: '',
-    dateFrom: null,
-    dateTo: null,
+    dateFrom: new Date('2018-09-01'),
+    dateTo: new Date('2019-09-30'),
     data: null,
     lineData: [],
     loading: false
@@ -101,20 +76,30 @@ const App = () => {
 
   const matches = useMediaQuery('(min-width: 960px)');
 
-  useEffect(() => {
-    console.log('hello world');
-    const dateFrom = new Date();
-    const dateTo = new Date();
-    dateFrom.setMonth(dateTo.getMonth() - 6);
-    setState({
-      ...state, 
-      dateFrom: dateFrom,
-      dateTo: dateTo
+  const getLineData = data => {
+    let lineData = [];
+    let dates = generateDates(state.dateFrom, state.dateTo);
+    data.forEach(d => {
+      let obj = {
+        id: d.skill,
+        color: "hsl(139, 70%, 50%)",
+        data: []
+      };
+      dates.forEach(date => {
+        let label = moment(date).format('YYYY-MM');
+        let count = d.dates.filter(dt => label === moment(dt).format('YYYY-MM')).length;
+        obj.data.push({
+          x: label,
+          y: count
+        });
+      });
+      lineData.push(obj);
     });
-  }, []);
+    console.log(lineData);
+    return lineData;
+  };
 
   const handleStateChange = (event, value) => {
-    console.log(value);
     let res = fetch('http://localhost:9000/jobs/state/' + value.abbreviation)
       .then(res => res.json())
       .then(data => {
@@ -135,16 +120,20 @@ const App = () => {
   };
 
   const handleDateFromChange = date => {
+    const lineData = getLineData(state.data);
     setState({
       ...state, 
-      dateFrom: date
+      dateFrom: date,
+      lineData: lineData
     });
   };
 
   const handleDateToChange = date => {
+    const lineData = getLineData(state.data);
     setState({
       ...state,
-      dateTo: date
+      dateTo: date,
+      lineData: lineData
     });
   };
 

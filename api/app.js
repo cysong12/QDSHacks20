@@ -70,21 +70,29 @@ app.get('/jobs', (req, res, err) => {
 });
 
 app.get('/jobs/state/:state', (req, res, err) => {
-  db.find({ state: { $eq: req.params.state } }).toArray(async (err, docs) => {
+  db.find(
+    { state: { $eq: req.params.state } }
+  ).toArray(async (err, docs) => {
     if (err) throw err;
     for (let doc of docs) {
       if (doc.skills === null) {
-        let description = doc.description.toLowerCase().replace(',', ' ').replace('/', ' ');
+        let description = doc.description
+          .toLowerCase()
+          .replace(",", " ")
+          .replace("/", " ");
         let skillsArray = [];
         skills.forEach(s => {
           if (s.test(description))
-            skillsArray.push(s.source.replace(/\\b/g, '').replace('\\', ''));
+            skillsArray.push(s.source.replace(/\\b/g, "").replace("\\", ""));
         });
         // const result = spawnSync('python', ['./python/parse_skills.py', doc.description]);
         // let output = result.output.toString();
         // let skills = output.substr(1, output.length - 4).split('\r\n');
         doc.skills = skillsArray;
-        await db.update({ state: { $eq: req.params.state } }, { $set: { skills: skillsArray } });
+        db.update(
+          { state: { $eq: req.params.state } },
+          { $set: { skills: skillsArray, description: '' } }
+        );
       }
     }
     res.send(docs);

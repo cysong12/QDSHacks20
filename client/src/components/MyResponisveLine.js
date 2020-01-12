@@ -4,7 +4,7 @@ import { ResponsiveLine } from '@nivo/line';
 const MyResponsiveLine = props => (
   <ResponsiveLine
     data={props.data}
-    margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+    margin={{ top: 50, right: 110, bottom: 80, left: 60 }}
     xScale={{ type: 'point' }}
     yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
     axisTop={null}
@@ -13,9 +13,9 @@ const MyResponsiveLine = props => (
       orient: 'bottom',
       tickSize: 5,
       tickPadding: 5,
-      tickRotation: 0,
+      tickRotation: 30,
       legend: 'posting dates',
-      legendOffset: 36,
+      legendOffset: 56,
       legendPosition: 'middle'
     }}
     axisLeft={{
