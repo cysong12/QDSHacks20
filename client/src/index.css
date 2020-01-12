@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#jobAnalyzer{
+  /*font-family: 'Indie Flower', cursive;*/
+        font-family: 'Permanent Marker', cursive;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 75pt;
+        line-height: 1.6;
+
+        color: #FFFFFF;
+        text-align: center;
+
+  
+}
