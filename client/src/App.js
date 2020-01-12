@@ -8,7 +8,7 @@ const App = () => {
   });
 
   const callAPI = () => {
-    fetch('http://localhost:9000/')
+    fetch('http://localhost:9000/test')
       .then(res => res.text())
       .then(res => setState({ apiResponse: res }));
   };
